@@ -1,0 +1,40 @@
+stockPred
+
+4 day period of pass data 
+4 day future 
+
+min 8 pt a max 26 pt c
+max profit with acuracy 
+
+prof: mix largest a-b or most a-b gap 
+
+min 10 min 
+profit more than 6$ 
+
+
+use last 
+
+-choos a adn b and c, then incrament c by .1 each time with ab constant , then move b up by .1 and restart the process. After both a and b are done then incrament c by .1
+
+- aab pair fials if after crosing b it returns to b without hitting c 
+
+- 9 bar ema for smoothing maybe more bar 
+
+- time it for failure, so say after 1 minute then look to see if it goes blow b and it fails, ignore all osolating before a minute. If it goes to c in the minute then its a sucsess, if it goes under b after that value then its a failure . maybe use 5 minutes 
+
+- use 5 minute timeframe
+
+- point b may be intbetween two time points so  wee need to check and get all theose pints 
+
+-only do day by day 9:30 - 4 intra day non weekends  
+	- worng just lkpook at data as a whole 
+
+-sucsess rate as % whe know total pairs and how many were true and how may were false 
+
+-weigt based on 
+
+- a has to be 1 dollar way from b at a minimum 
+
+
+- find all pints where a, b, b`(b-0.4) , and c were hit, put them insequential order. if the pattern abc come up then its a sucsess, if the pattern ab(b-0.4) or aba then its a failure. 
+-prof calculator of #abc * (c-b) - #abb`*0.4. use the 5 minute time frame 
