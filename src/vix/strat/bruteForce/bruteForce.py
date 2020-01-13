@@ -51,11 +51,10 @@ def main():
 
 
 
-				#print("a: "+str(a)+" b: "+str(b)+" c: " +str(c))
 
-#	for p in procs:
-#		p.join()
 
+
+#maybe dont use string
 def build_string(a,b,c,df):
 
 	prev=-1
