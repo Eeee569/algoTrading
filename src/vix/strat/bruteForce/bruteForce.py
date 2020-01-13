@@ -25,7 +25,7 @@ def main():
 	min_vix = df['Last'].min()
 
 	procs=[]
-	pool = Pool(processes=8)
+	pool = Pool(processes=4)
 
 	for a in np.arange(min_vix , max_vix - (INCRAMENT*2) , INCRAMENT):
 		for b in np.arange(a + (INCRAMENT*1), max_vix - (INCRAMENT*1), INCRAMENT):
@@ -34,7 +34,7 @@ def main():
 
 				#print("a: "+str(a)+" b: "+str(b)+" c: " +str(c))
 
-	#pool.close()
+	pool.close()
 	pool.join()
 
 
