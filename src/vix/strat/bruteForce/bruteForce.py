@@ -1,5 +1,5 @@
 import pandas as pd
-from multiprocessing import Process
+from multiprocessing import Process,Queue
 import numpy as np
 import queue 
 import time
@@ -29,17 +29,17 @@ def main():
 	min_vix = df['Last'].min()
 
 	procs=[]
-	#q=queue.Queue(maxsize=16)
+	q=Queue()
 
 	for a in np.arange(min_vix , max_vix - (INCRAMENT*2) , INCRAMENT):
 		for b in np.arange(a + (INCRAMENT*1), max_vix - (INCRAMENT*1), INCRAMENT):
 			for c in np.arange(b + (INCRAMENT*1), max_vix , INCRAMENT):
 
-				proc = Process(target=run_test, args=(a,b,c,df.copy())) #df.copy() may not be nesisary
+				proc = Process(target=run_test, args=(a,b,c,df.copy(),q)) #df.copy() may not be nesisary
 				procs.append(proc)
 				proc.start()
 				proc.join(timeout=0)
-
+				#time.sleep(1)
 				while(len(procs)>=NUM_PROC):					
 					time.sleep(1)
 					i=0
@@ -51,38 +51,78 @@ def main():
 
 
 
+	max_result=[-1,-1,-1,-1]
+	while(not q.empty()):
+		result = q.get()
+		if(result[3]>result[4] and result[3]>max_result[3]):
+			max_result=result
+
+
+	print("*******************Final: a: "+str(max_result[0])+" b: "+str(max_result[1])+ " c: "+str(max_result[2])+"\n"+"prof: "+str(max_result[3])+ " unprof: "+str(max_result[4])+"\n")
 
 
 
-#maybe dont use string
-def build_string(a,b,c,df):
 
+
+
+
+def run_test(a,b,c,df,q):
 	prev=-1
-	string_list=[]
+	string_list=[0]
+	num_prof = 0
+	num_unprof=0
+	hit_a = False
+	hit_b = False
+
+	result = []
 	for index, row in df.iterrows():
 
 		#need testing, this is also only for values going up
 
-		if(a>prev and a<=row['Last']):
-			string_list.append('a')
-		elif((b-B_PRIME)>prev and(b-B_PRIME)<=row['Last']):
-			string_list.append('b`')
-		elif(b>prev and b<=row['Last']):
-			string_list.append('b')
-		elif(c>prev and c<=row['Last']):
-			string_list.append('c')
-		
+		#going up
+		if(prev<=row['Last']):
+			if( (a>prev and a<=row['Last']) or (a<prev and a<=row['Last']) ):
+				hit_a=True
+				hit_b=False
+			if((b>prev and b<=row['Last']) or (b<prev and b>=row['Last']) ):
+				if(hit_a):
+					hit_b=True
+			if(((b-B_PRIME)>prev and(b-B_PRIME)<=row['Last']) or ((b-B_PRIME)<prev and(b-B_PRIME)>=row['Last'])):
+				if(hit_b):
+					hit_a=False
+					hit_b=False
+					num_unprof+=1
+			if((c>prev and c<=row['Last'])or(c<prev and c>=row['Last'])):
+				if(hit_a and hit_b):
+					num_prof+=1
+				hit_a=False
+				hit_b=False
+
+		#going down
+		# if(prev>row['Last']):
+		# 	if(c<prev and c>=row['Last']):
+		# 		if (window[-1] != 4):
+		# 			window.append(4)
+		# 	if(b<prev and b>=row['Last']):
+		# 		if (window[-1] != 3):
+		# 			window.append(3)
+		# 	if((b-B_PRIME)<prev and(b-B_PRIME)>=row['Last']):
+		# 		if (window[-1] != 2):
+		# 			window.append(2)
+		# 	if(a<prev and a<=row['Last']):
+		# 		if(window[-1]!=1):
+		# 			window.append(1)
+
 		prev=row['Last']
+	result.append(a)
+	result.append(b)
+	result.append(c)
+	result.append(num_prof)
+	result.append(num_unprof)
+	print("a: "+str(a)+" b: "+str(b)+ " c: "+str(c)+"\n"+"prof: "+str(num_prof*((c-b)/MULTIPLIER))+ " unprof: "+str(num_unprof*B_PRIME/MULTIPLIER)+"\n")
+	q.put(result)
 
-	return string_list
 
-
-def run_test(a,b,c,df):
-	
-	string_list=build_string(a,b,c,df)
-
-	for i in string_list:
-		print(i)
 
 
 
