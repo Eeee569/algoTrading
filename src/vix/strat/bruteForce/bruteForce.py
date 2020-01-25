@@ -97,23 +97,23 @@ def run_test(a,b,c,df,q):
 		#need testing, this is also only for values going up
 
 		#going up
-		if(prev<=row['Last']):
-			if( (a>prev and a<=row['Last']) or (a<prev and a<=row['Last']) ):
-				hit_a=True
-				hit_b=False
-			if((b>prev and b<=row['Last']) or (b<prev and b>=row['Last']) ):
-				if(hit_a):
-					hit_b=True
-			if(((b-B_PRIME)>prev and(b-B_PRIME)<=row['Last']) or ((b-B_PRIME)<prev and(b-B_PRIME)>=row['Last'])):
-				if(hit_b):
-					hit_a=False
-					hit_b=False
-					num_unprof+=1
-			if((c>prev and c<=row['Last'])or(c<prev and c>=row['Last'])):
-				if(hit_a and hit_b):
-					num_prof+=1
+
+		if( (a>prev and a<=row['Last']) or (a<prev and a<=row['Last']) ):
+			hit_a=True
+			hit_b=False
+		if((b>prev and b<=row['Last']) or (b<prev and b>=row['Last']) ):
+			if(hit_a):
+				hit_b=True
+		if(((b-B_PRIME)>prev and(b-B_PRIME)<=row['Last']) or ((b-B_PRIME)<prev and(b-B_PRIME)>=row['Last'])):
+			if(hit_b):
 				hit_a=False
 				hit_b=False
+				num_unprof+=1
+		if((c>prev and c<=row['Last'])or(c<prev and c>=row['Last'])):
+			if(hit_a and hit_b):
+				num_prof+=1
+			hit_a=False
+			hit_b=False
 
 		#going down
 		# if(prev>row['Last']):
