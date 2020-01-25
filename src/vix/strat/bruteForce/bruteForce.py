@@ -86,12 +86,12 @@ def run_test(a,b,c,df,q):
 	hit_a = False
 	hit_b = False
 
-	#testing
-	print("started proc"+ " a: "+str(a)+ " b: "+str(b)+ " c: "+str(c))
-	result=[-1,-1,-1,-1]
-	q.put(result)
-	return
-	#
+	# #testing
+	# print("started proc"+ " a: "+str(a)+ " b: "+str(b)+ " c: "+str(c))
+	# result=[-1,-1,-1,-1]
+	# q.put(result)
+	# return
+	# #
 
 	result = []
 	for index, row in df.iterrows():
