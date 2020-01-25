@@ -10,7 +10,7 @@ MULTIPLIER = 100
 TIME_INTERVAL = 5
 INCRAMENT = int(0.1 * MULTIPLIER) 
 B_PRIME = int(0.4 * MULTIPLIER )
-NUM_PROC = 16
+NUM_PROC = 24
 
 
 def main():
@@ -28,17 +28,28 @@ def main():
 	max_vix = df['Last'].max()
 	min_vix = df['Last'].min()
 
+
+
 	procs=[]
-	q=Queue()
+	q=Queue(maxsize=1000)
+	queue_list=[]
+	proc_count=1
+
+	print(max_vix)
+	print(min_vix)
 
 	for a in np.arange(min_vix , max_vix - (INCRAMENT*2) , INCRAMENT):
 		for b in np.arange(a + (INCRAMENT*1), max_vix - (INCRAMENT*1), INCRAMENT):
 			for c in np.arange(b + (INCRAMENT*1), max_vix , INCRAMENT):
-
-				proc = Process(target=run_test, args=(a,b,c,df.copy(),q)) #df.copy() may not be nesisary
+				if proc_count%1000 == 0:
+					queue_list.append(q)
+					q=Queue(maxsize=1000)
+				proc = Process(target=run_test, args=(a,b,c,df,q)) #df.copy() may not be nesisary
 				procs.append(proc)
 				proc.start()
 				proc.join(timeout=0)
+				if a==891 and b==941 and c == 5001:
+					print("break")
 				#time.sleep(1)
 				while(len(procs)>=NUM_PROC):					
 					time.sleep(1)
@@ -48,14 +59,16 @@ def main():
 							del procs[i]
 							i -=1
 						i +=1
+				proc_count+=1
 
 
 
 	max_result=[-1,-1,-1,-1]
-	while(not q.empty()):
-		result = q.get()
-		if(result[3]>result[4] and result[3]>max_result[3]):
-			max_result=result
+	for q_temp in queue_list:
+		while(not q_temp.empty()):
+			result = q.get()
+			if(result[3]>result[4] and result[3]>max_result[3]):
+				max_result=result
 
 
 	print("*******************Final: a: "+str(max_result[0])+" b: "+str(max_result[1])+ " c: "+str(max_result[2])+"\n"+"prof: "+str(max_result[3])+ " unprof: "+str(max_result[4])+"\n")
@@ -68,11 +81,17 @@ def main():
 
 def run_test(a,b,c,df,q):
 	prev=-1
-	string_list=[0]
 	num_prof = 0
 	num_unprof=0
 	hit_a = False
 	hit_b = False
+
+	#testing
+	print("started proc"+ " a: "+str(a)+ " b: "+str(b)+ " c: "+str(c))
+	result=[-1,-1,-1,-1]
+	q.put(result)
+	return
+	#
 
 	result = []
 	for index, row in df.iterrows():
