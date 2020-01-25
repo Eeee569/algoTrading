@@ -50,7 +50,7 @@ def main():
 				proc.join(timeout=0)
 				#time.sleep(1)
 				while(len(procs)>=NUM_PROC):					
-					time.sleep(1)
+					time.sleep(0.1)
 					i=0
 					while(i<len(procs)):
 						if(not procs[i].is_alive()):
