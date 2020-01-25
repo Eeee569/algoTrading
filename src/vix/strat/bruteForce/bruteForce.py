@@ -44,12 +44,10 @@ def main():
 				if proc_count%1000 == 0:
 					queue_list.append(q)
 					q=Queue(maxsize=1000)
-				proc = Process(target=run_test, args=(a,b,c,df,q)) #df.copy() may not be nesisary
+				proc = Process(target=run_test, args=(a,b,c,df.copy(),q)) #df.copy() may not be nesisary
 				procs.append(proc)
 				proc.start()
 				proc.join(timeout=0)
-				if a==891 and b==941 and c == 5001:
-					print("break")
 				#time.sleep(1)
 				while(len(procs)>=NUM_PROC):					
 					time.sleep(1)
