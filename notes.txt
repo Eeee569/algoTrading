@@ -1,0 +1,21 @@
+-todo
+	-find additional data for training
+		-sentiment analysis
+			-what sights/need to find a historical source that's lasted the whole period
+		-what opther data like comodeties
+			- oil/oil futures
+			-quantity traded
+			-
+
+
+-Data
+	-snp
+		-daily historical
+			-through yahoo finance
+
+-Strategy
+	-Control
+
+	-Reinforcment learning
+
+	-Basic up/down
