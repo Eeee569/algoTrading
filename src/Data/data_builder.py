@@ -18,3 +18,6 @@ class Stock_data:
     def data_as_df(self):
         return self.history
 
+
+
+
